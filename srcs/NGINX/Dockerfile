@@ -1,11 +1,14 @@
 FROM debian:bullseye-slim 
 
-RUN apt-get update \
-    && apt-get install -y nginx openssl curl vim
+RUN apt update \
+    && apt install -y nginx openssl curl vim \
+    && mkdir -p /etc/nginx/ssl \
+    && openssl req -x509 -nodes -out /etc/nginx/ssl/kadighsslCertifecate.crt -keyout /etc/nginx/ssl/kadighsslCertifecate.key -subj "/C=MA/ST=KH/L=Khouribga/O=42/OU=42/CN=aaoutem-.42.fr/UID=aaoutem-"
 
 EXPOSE 443
 
-# COPY ./nginx.conf  /etc/nginx/nginx.conf
+# COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
 
 # try to run nginx withou daemon mode and check what is going on
 CMD ["nginx", "-g", "daemon off;"]
