@@ -6,14 +6,14 @@
 #    By: aaoutem- <aaoutem-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/26 18:07:58 by aaoutem-          #+#    #+#              #
-#    Updated: 2024/04/27 11:11:00 by aaoutem-         ###   ########.fr        #
+#    Updated: 2024/04/29 10:26:55 by aaoutem-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 build:
 	docker image build -t mariadb-img ./srcs/requirements/mariaDB
-# docker image build -t nginx-img ./srcs/NGINX
+	docker image build -t nginx-img ./srcs/requirements/NGINX
 
 run:
-	docker container run -it --name mariadb mariadb-img
-#docker container run -d -p 80:80 -p 443:443 --name nginx nginx-img
+	docker container run -d --name mariadb mariadb-img
+	docker container run -d -p 80:80 -p 443:443 --name nginx nginx-img
