@@ -115,3 +115,215 @@ Now, when you run `make all`, it will build the MariaDB container and start it a
 That's it! You now have a MariaDB container set up using a Debian base image. The container will start the MariaDB server, create the specified database and user, and be accessible to other containers within the "inception" network.
 
 Remember to customize the configuration, environment variables, and initialization script according to your specific requirements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===========================================WORDPRESS==================================================
+===========================================WORDPRESS==================================================
+===========================================WORDPRESS==================================================
+===========================================WORDPRESS==================================================
+===========================================WORDPRESS==================================================
+===========================================WORDPRESS==================================================
+
+
+
+
+Text
+Certainly! Let's go through the process of setting up the WordPress container in detail.
+
+1. Create a Dockerfile:
+   - In the `srcs/requirements/wordpress` directory, create a file named `Dockerfile`.
+   - This file will contain the instructions to build the WordPress container.
+
+2. Choose a base image:
+   - In the Dockerfile, specify the base image you want to use for the WordPress container.
+   - As mentioned in the project requirements, you should use either the penultimate stable version of Alpine or Debian.
+   - For example, you can use `FROM alpine:3.14` or `FROM debian:buster`.
+
+3. Install necessary packages:
+   - Use the `RUN` instruction in the Dockerfile to install the required packages for WordPress and php-fpm.
+   - For Alpine, you can use the `apk` package manager. For example:
+     ```
+     RUN apk update && apk add --no-cache \
+         php7 \
+         php7-fpm \
+         php7-mysqli \
+         php7-json \
+         php7-curl \
+         php7-dom \
+         php7-exif \
+         php7-fileinfo \
+         php7-mbstring \
+         php7-openssl \
+         php7-xml \
+         php7-zip
+     ```
+   - For Debian, you can use the `apt` package manager. For example:
+     ```
+     RUN apt-get update && apt-get install -y \
+         php \
+         php-fpm \
+         php-mysql \
+         php-json \
+         php-curl \
+         php-dom \
+         php-exif \
+         php-fileinfo \
+         php-mbstring \
+         php-openssl \
+         php-xml \
+         php-zip
+     ```
+
+4. Configure php-fpm:
+   - Create a directory named `conf` inside the `srcs/requirements/wordpress` directory.
+   - Inside the `conf` directory, create a file named `www.conf` to store the php-fpm configuration.
+   - Configure php-fpm to listen on a Unix socket or a specific port.
+   - For example, you can use the following configuration in `www.conf`:
+     ```
+     [www]
+     listen = 9000
+     listen.owner = www-data
+     listen.group = www-data
+     pm = dynamic
+     pm.max_children = 5
+     pm.start_servers = 2
+     pm.min_spare_servers = 1
+     pm.max_spare_servers = 3
+     ```
+   - In the Dockerfile, copy the `www.conf` file to the appropriate location inside the container.
+     ```
+     COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
+     ```
+
+5. Download and extract WordPress:
+   - In the Dockerfile, use the `RUN` instruction to download and extract the latest version of WordPress.
+   - For example:
+     ```
+     RUN wget https://wordpress.org/latest.tar.gz && \
+         tar -xzf latest.tar.gz && \
+         rm latest.tar.gz && \
+         mv wordpress /var/www/html
+     ```
+
+6. Set up WordPress configuration:
+   - Create a `wp-config.php` file inside the `srcs/requirements/wordpress` directory.
+   - Configure the database connection details in `wp-config.php` using environment variables.
+   - For example:
+     ```php
+     <?php
+     define( 'DB_NAME', getenv('MYSQL_DATABASE') );
+     define( 'DB_USER', getenv('MYSQL_USER') );
+     define( 'DB_PASSWORD', getenv('MYSQL_PASSWORD') );
+     define( 'DB_HOST', getenv('MYSQL_HOST') );
+     define( 'DB_CHARSET', 'utf8' );
+     define( 'DB_COLLATE', '' );
+     // ...
+     ```
+   - In the Dockerfile, copy the `wp-config.php` file to the appropriate location inside the container.
+     ```
+     COPY wp-config.php /var/www/html/wp-config.php
+     ```
+
+7. Set up entrypoint script:
+   - Create a directory named `tools` inside the `srcs/requirements/wordpress` directory.
+   - Inside the `tools` directory, create a file named `entrypoint.sh`.
+   - In the `entrypoint.sh` script, perform any necessary setup or initialization steps for WordPress.
+   - For example, you can use the following script:
+     ```bash
+     #!/bin/sh
+     
+     # Wait for the database to be ready
+     while ! mysqladmin ping -h"$MYSQL_HOST" --silent; do
+         sleep 1
+     done
+     
+     # Install WordPress if not already installed
+     if [ ! -f /var/www/html/wp-config.php ]; then
+         wp core install --url="$DOMAIN_NAME" --title="My WordPress Site" --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --skip-email
+     fi
+     
+     # Start php-fpm
+     php-fpm7
+     ```
+   - Make sure to set the appropriate permissions for the `entrypoint.sh` script.
+     ```
+     RUN chmod +x /tools/entrypoint.sh
+     ```
+   - In the Dockerfile, set the `ENTRYPOINT` to the `entrypoint.sh` script.
+     ```
+     ENTRYPOINT ["/tools/entrypoint.sh"]
+     ```
+
+8. Expose the necessary port:
+   - In the Dockerfile, use the `EXPOSE` instruction to expose the port on which WordPress will be accessible.
+   - For example, if you configured php-fpm to listen on port 9000:
+     ```
+     EXPOSE 9000
+     ```
+
+9. Build the WordPress container:
+   - In the `docker-compose.yml` file, define a service for the WordPress container.
+   - Specify the build context and the Dockerfile location.
+   - Set the necessary environment variables for WordPress, such as database connection details and admin credentials.
+   - Mount the WordPress volume to persist the website files.
+   - Connect the WordPress container to the appropriate network.
+   - For example:
+     ```yaml
+     services:
+       wordpress:
+         build:
+           context: ./requirements/wordpress
+           dockerfile: Dockerfile
+         environment:
+           MYSQL_HOST: mariadb
+           MYSQL_DATABASE: wordpress
+           MYSQL_USER: wordpress
+           MYSQL_PASSWORD: password
+           WP_ADMIN_USER: admin
+           WP_ADMIN_PASSWORD: password
+           WP_ADMIN_EMAIL: admin@example.com
+         volumes:
+           - wordpress_data:/var/www/html
+         networks:
+           - inception
+         depends_on:
+           - mariadb
+     
+     volumes:
+       wordpress_data:
+     
+     networks:
+       inception:
+     ```
+
+10. Update the Makefile:
+    - In the Makefile, add a target to build the WordPress container using the `docker-compose build` command.
+    - For example:
+      ```makefile
+      wordpress:
+          docker-compose build wordpress
+      ```
+
+That covers the detailed steps to set up the WordPress container for the Inception project. Make sure to integrate this container with the other required containers (NGINX and MariaDB) and configure the necessary volumes, networks, and environment variables in the `docker-compose.yml` file.
+
+Remember to handle sensitive information, such as passwords and credentials, using environment variables and the `.env` file, as mentioned in the project requirements.
+
+Let me know if you have any further questions!
+
+
