@@ -6,6 +6,9 @@ RUN apt update \
     && rm /etc/nginx/nginx.conf \
     && openssl req -x509 -nodes -out /etc/nginx/ssl/kadighsslCertifecate.crt -keyout /etc/nginx/ssl/kadighsslCertifecate.key -subj "/C=MA/ST=KH/L=Khouribga/O=42/OU=42/CN=aaoutem-.42.fr/UID=aaoutem-"
 
+RUN chmod 755 /var/www \
+    && chown -R www-data:www-data /var/www
+
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 EXPOSE 443
 
