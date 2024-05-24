@@ -6,14 +6,15 @@
 #    By: aaoutem- <aaoutem-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/26 18:07:58 by aaoutem-          #+#    #+#              #
-#    Updated: 2024/04/29 10:26:55 by aaoutem-         ###   ########.fr        #
+#    Updated: 2024/05/23 17:19:13 by aaoutem-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+#run docker compose
 build:
-	docker image build -t mariadb-img ./srcs/requirements/mariaDB
-	docker image build -t nginx-img ./srcs/requirements/NGINX
+	docker compose -f ./srcs/compose.yml up
+# run:
 
-run:
-	docker container run -d --name mariadb mariadb-img
-	docker container run -d -p 80:80 -p 443:443 --name nginx nginx-img
+# rerun :
+# 	docker container rm -f wp
+# 	docker container run -it -p 9000:9000 --name wp wp-img

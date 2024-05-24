@@ -9,7 +9,7 @@ RUN apt update \
 RUN chmod 755 /var/www \
     && chown -R www-data:www-data /var/www
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/default /etc/nginx/sites-enabled/default
 
 EXPOSE 443
 
