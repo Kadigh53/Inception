@@ -20,8 +20,8 @@ services:
             - inception
         env_file:
             - .env
-        volumes:
-            - /home/aaoutem-/data/mariadb:/var/lib/mysql
+        # volumes:
+        #     - /home/aaoutem-/data/mariadb:/var/lib/mysql
         expose:
             - 3306
 
@@ -34,8 +34,8 @@ services:
             - .env
         depends_on:
             - mariadb
-        volumes:
-            - /home/aaoutem-/data/wordpress:/var/www/wordpress
+        # volumes:
+        #     - /home/aaoutem-/data/wordpress:/var/www/wordpress
         expose:
             - 9000
 

@@ -19,3 +19,6 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 EXPOSE  9000
 
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY ./conf/wp_config.sh /wp_config.sh
+
+CMD [ "/wp_config.sh" ]
