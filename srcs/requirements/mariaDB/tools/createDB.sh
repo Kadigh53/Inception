@@ -2,14 +2,23 @@
 
 service mariadb start;
 
-# Create a database
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
-mysql -u root -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';"
-# mysql -uroot-e "GRANT ALL PRIVILEGES ON '$DB_NAME'.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@'%' IDENTIFIED BY '${DB_PASSWORD}';"
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';"
-mysql -u root -e "FLUSH PRIVILEGES;"
+mysql << EOF
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PASSWORD}';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EOF
 
-mariadb-admin -u root -p$DB_PASSWORD shutdown
+# Create a database
+mysql -u root -p"${ROOT_PASSWORD}" << EOF
+CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@'%' IDENTIFIED BY '${DB_PASSWORD}';
+FLUSH PRIVILEGES;
+EOF
+
+mariadb-admin -u root -p"${ROOT_PASSWORD}" shutdown
+
+echo "MariaDB is ready to use ..........................."
 
 exec mariadbd-safe 

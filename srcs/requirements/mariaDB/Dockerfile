@@ -11,4 +11,4 @@ COPY ./tools/createDB.sh /usr/local/bin/
 
 EXPOSE 3306
 
-CMD ["/usr/local/bin/createDB.sh"]
+ENTRYPOINT ["/usr/local/bin/createDB.sh"]
