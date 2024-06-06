@@ -4,9 +4,9 @@ RUN apt update \
     && apt install -y nginx openssl curl vim \
     && mkdir -p /etc/nginx/ssl \
     && openssl req -x509 -nodes -out /etc/nginx/ssl/kadighsslCertifecate.crt -keyout /etc/nginx/ssl/kadighsslCertifecate.key \
-    -subj "/C=MA/ST=KH/L=Khouribga/O=42/OU=42/CN=aaoutem-.42.ma/UID=aaoutem-"
+    -subj "/C=MA/ST=KH/L=Khouribga/O=42/OU=42/CN=aaoutem-.42.fr/UID=aaoutem-"
 
-RUN chmod 755 /var/www \
+RUN chmod -R 755 /var/www \
     && chown -R www-data:www-data /var/www
 
 COPY ./conf/default /etc/nginx/sites-enabled/default

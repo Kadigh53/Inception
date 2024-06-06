@@ -6,7 +6,7 @@
 #    By: aaoutem- <aaoutem-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/26 18:07:58 by aaoutem-          #+#    #+#              #
-#    Updated: 2024/06/02 15:20:56 by aaoutem-         ###   ########.fr        #
+#    Updated: 2024/06/06 12:31:48 by aaoutem-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@
 build:
 	docker compose -f ./srcs/compose.yml up
 rm:
-	docker compose -f ./srcs/compose.yml rm 
-	docker image rm -f srcs-wordpress srcs-nginx srcs-mariadb
-re : rm 
-	docker compose -f ./srcs/compose.yml up
+	docker compose -f ./srcs/compose.yml down
+
+re : rm build
