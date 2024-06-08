@@ -1,10 +1,6 @@
 #!/bin/bash
 
 sleep 10
-# until mysqladmin ping -h localhost --silent; do
-#     echo "Waiting for MariaDB to be ready..."
-#     sleep 1
-# done
 
 WP_CONF_FILE="/var/www/wordpress/wp-config.php"
 WP_PATH="/var/www/wordpress"

@@ -1,44 +1,53 @@
-version : "3.8"
-
+version: "3.8"
 services:
-    nginx:
-        build: ./requirements/nginx
-        container_name: nginx
-        networks:
-            - inception
-        env_file:
-            - .env
-        depends_on:
-             - wordpress
-        ports:
-            - 443:443
+  nginx:
+    container_name: nginx
+    volumes:
+      - wordpress:/var/www/wordpress:ro
+    build: ./requirements/nginx
+    networks:
+      - inception
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    ports:
+      - 443:443
 
-    mariadb:
-        build: ./requirements/mariadb
-        container_name: mariadb
-        networks:
-            - inception
-        env_file:
-            - .env
-        # volumes:
-        #     - ./web:/var/lib/mysql
-        expose:
-            - 3306
+  mariadb:
+    container_name: mariadb
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    build: ./requirements/mariadb
+    networks:
+      - inception
+    env_file:
+      - .env
+    expose:
+      - 3306
 
-    wordpress:
-        build: ./requirements/wordpress
-        container_name: wordpress
-        networks:
-            - inception
-        env_file:
-            - .env
-        depends_on:
-            - mariadb
-        # volumes:
-        #     - ./web:/var/www/wordpress
-        expose:
-            - 9000
+  wordpress:
+    container_name: wordpress
+    volumes:
+      - wordpress:/var/www/wordpress
+    build: ./requirements/wordpress
+    networks:
+      - inception
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    expose:
+      - 9000
 
 networks:
-    inception:
-        driver: bridge
+  inception:
+    driver: bridge
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/aaoutem-/data/wpvol
