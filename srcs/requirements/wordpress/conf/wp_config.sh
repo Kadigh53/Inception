@@ -26,6 +26,8 @@ if ! wp core is-installed --allow-root ; then
 
         wp user create --allow-root \
         "$USER1" "$USER1_EMAIL" --role=author --user_pass="$USER1_PASSWORD"
+
+        echo "WordPress installed successfully............................................">> /var/3biqa.txt
 fi
 
 php-fpm7.4 -F
