@@ -1,19 +1,6 @@
 version: "3.8"
-services:
-    nginx:
-        container_name: nginx
-        volumes:
-            - wordpress:/var/www/wordpress:ro
-        build: ./requirements/nginx
-        networks:
-            - inception
-        env_file:
-            - .env
-        depends_on:
-            - wordpress
-        ports:
-            - 443:443
 
+services:
     mariadb:
         container_name: mariadb
         volumes:
@@ -25,7 +12,6 @@ services:
             - .env
         expose:
             - 3306
-
     wordpress:
         container_name: wordpress
         volumes:
@@ -39,6 +25,19 @@ services:
             - mariadb
         expose:
             - 9000
+    nginx:
+        container_name: nginx
+        volumes:
+            - wordpress:/var/www/wordpress:ro
+        build: ./requirements/nginx
+        networks:
+            - inception
+        env_file:
+            - .env
+        depends_on:
+            - wordpress
+        ports:
+            - 443:443
 
 networks:
     inception:

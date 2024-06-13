@@ -2,7 +2,7 @@ FROM debian:bullseye-slim
 
 RUN apt-get update  \
     && apt-get install -y wget \
-    && apt-get install -y php7.4 php7.4-fpm php7.4-mysql mariadb-client vim \
+    && apt-get install -y php7.4 php7.4-fpm php7.4-mysql mariadb-client vim netcat \
     && mkdir -p /run/php
 
 # Install wordpress needed to understand 
