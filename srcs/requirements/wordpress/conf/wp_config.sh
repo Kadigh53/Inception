@@ -23,7 +23,7 @@ if ! wp core is-installed --allow-root ; then
     # WP is not installed. Let's try installing it.
 
     wp core install --allow-root \
-        --url=https:\\localhost \
+        --url=https:\\"${DOMAINE_NAME}" \
         --title="Inception" \
         --admin_user="$ADMIN_USER" \
         --admin_password="$ADMIN_PASSWORD" \
