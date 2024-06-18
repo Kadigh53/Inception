@@ -23,7 +23,7 @@ if ! wp core is-installed --allow-root ; then
     # WP is not installed. Let's try installing it.
 
     wp core install --allow-root \
-        --url=https:\\"${DOMAINE_NAME}" \
+        --url=https:\\aaoutem-.42.fr \
         --title="Inception" \
         --admin_user="$ADMIN_USER" \
         --admin_password="$ADMIN_PASSWORD" \
@@ -31,6 +31,12 @@ if ! wp core is-installed --allow-root ; then
 
     wp user create --allow-root \
         "$USER1" "$USER1_EMAIL" --role=author --user_pass="$USER1_PASSWORD"
+
+    wp option update siteurl https://aaoutem-.42.fr --allow-root
+    wp option update home https://aaoutem-.42.fr --allow-root
+
+    # Flush rewrite rules
+    wp rewrite flush --allow-root
 
 fi
 

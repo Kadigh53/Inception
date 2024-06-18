@@ -14,11 +14,10 @@ RUN wget https://wordpress.org/latest.tar.gz -P /var/www \
 RUN chown -R root:root /var/www/wordpress
 
 # Install wp-cli
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
-RUN chmod +x wp-cli.phar \
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-    
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY ./conf/wp_config.sh /var/www/wordpress/wp_config.sh
 

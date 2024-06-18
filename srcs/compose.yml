@@ -5,7 +5,7 @@ services:
         container_name: mariadb
         volumes:
             - mariadb:/var/lib/mysql
-        build: ./requirements/mariadb
+        build: ./requirements/mariaDB
         networks:
             - inception
         env_file:
@@ -29,7 +29,7 @@ services:
         container_name: nginx
         volumes:
             - wordpress:/var/www/wordpress:ro
-        build: ./requirements/nginx
+        build: ./requirements/NGINX
         networks:
             - inception
         env_file:
